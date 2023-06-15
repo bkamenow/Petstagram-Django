@@ -16,7 +16,7 @@
                             <div class="profilepic">
                                 <div class="profile_img">
                                     <div class="image">
-                                        <img src="/static/images/person.png" alt="img8">
+                                        <img src="{% static '/images/person.png' %}" alt="img8">
                                     </div>
                                 </div>
                             </div>
@@ -45,8 +45,8 @@
                                 </a>
 
                                 <!-- Link to Delete Pet Photo Page -->
-                                <a href="#">
-                                    <img class="bin-img" src="/static/images/icon-remove-22.jpg" alt="bin button">
+                                <a href="{% url 'details-photo' photo.pk %}">
+                                    <img class="bin-img" src="{% static '/images/icon-remove-22.jpg' %}" alt="bin button">
                                 </a>
                             </div>
                             <!-- End IF the viewer is the creator of the photo -->
@@ -60,7 +60,7 @@
                 <!-- Start Pet Photo -->
                 <div class="imgBx" id="place the id of the photo here">
                     <!-- Pet Photo -->
-                    <img src="/static/images/axolotl.jpeg" alt="post" class="cover">
+                    <img src="{{ photo.photo.url }}" alt="post" class="cover">
                 </div>
                 <!-- End Pet Photo -->
 
