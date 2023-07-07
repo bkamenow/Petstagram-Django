@@ -1,55 +1,51 @@
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views import generic as views, generic
 
-from petstagram_workshop.common.forms import CommentForm
 from petstagram_workshop.pets.models import Pet
 from petstagram_workshop.pets.forms import PetFrom, PetDeleteForm
 
 
-# Create your views here.
+@method_decorator(login_required, name='dispatch')
+class CreatePetView(views.CreateView):
+    model = Pet
+    form_class = PetFrom
+    template_name = 'pets/pet-add-page.html'
+    success_url = reverse_lazy('home page')
+
+    def form_valid(self, form):
+        pet = form.save(commit=False)
+        pet.user = self.request.user
+        pet.save()
+        return super().form_valid(form)
 
 
-def add_pet(request):
-    form = PetFrom(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('profile details', pk=1)
-    context = {'form': form}
+class DetailsPetView(generic.DetailView):
+    model = Pet
+    template_name = 'pets/pet-details-page.html'
 
-    return render(request, template_name='pets/pet-add-page.html', context=context)
-
-
-def details_pet(request, username, pet_slug):
-    pet = Pet.objects.get(slug=pet_slug)
-    all_photo = pet.photo_set.all()
-    comment_form = CommentForm()
-    context = {
-        'pet': pet,
-        'all_photos': all_photo,
-        'comment_form': comment_form,
-    }
-    return render(request, template_name='pets/pet-details-page.html', context=context)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user__username=self.kwargs['username'], slug=self.kwargs['pet_name'])
 
 
-def edit_pet(request, username, pet_slug):
-    pet = Pet.objects.get(slug=pet_slug)
-    if request.method == 'GET':
-        form = PetFrom(instance=pet, initial=pet.__dict__)
-    else:
-        form = PetFrom(request.POST, instance=pet)
-        if form.is_valid():
-            form.save()
-            return redirect('profile details', username, pet_slug)
-    context = {'form': form}
+@method_decorator(login_required, name='dispatch')
+class EditPetView(views.UpdateView):
+    model = Pet
+    form_class = PetFrom
+    template_name = 'pets/pet-edit-page.html'
 
-    return render(request, template_name='pets/pet-edit-page.html', context=context)
+    def get_success_url(self):
+        return reverse_lazy('details-pet', kwargs={'pk': self.object.pk})
 
 
-def delete_pet(request, username, pet_slug):
-    pet = Pet.objects.get(slug=pet_slug)
-    if request.method == 'POST':
-        pet.delete()
-        return redirect('profile details', pk=1)
-    form = PetDeleteForm(initial=pet.__dict__)
-    context = {'form': form}
+@method_decorator(login_required, name='dispatch')
+class DeletePetView(views.DeleteView):
+    model = Pet
+    form_class = PetDeleteForm
+    template_name = 'pets/pet-delete-page.html'
+    next_page = reverse_lazy('home page')
 
-    return render(request, template_name='pets/pet-delete-page.html', context=context)
+    # def post(self, *args, **kwargs):
+    #     self.request.pet.pk.delete()

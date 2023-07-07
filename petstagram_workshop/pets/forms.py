@@ -6,16 +6,18 @@ from petstagram_workshop.pets.models import Pet
 class PetFrom(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['name', 'date_of_birth', 'personal_photo']
+        fields = ['name', 'age', 'type', 'date_of_birth', 'personal_photo']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Pet name'}),
+            'age': forms.TextInput(attrs={'placeholder': 'Age'}),
+            'type': forms.TextInput(attrs={'placeholder': 'Type'}),
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-            'personal_photo': forms.TextInput(attrs={'placeholder': 'Link to image'}),
+            'personal_photo': forms.FileInput(),
         }
         labels = {
             'name': 'Pet Name',
             'date_of_birth': 'Date of Birth',
-            'personal_photo': 'Link to Image',
+            'personal_photo': 'Personal Photo',
         }
 
 

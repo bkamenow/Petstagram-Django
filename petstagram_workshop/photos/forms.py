@@ -7,6 +7,15 @@ class PhotoCreateForm(forms.ModelForm):
     class Meta:
         model = Photo
         fields = '__all__'
+        widgets = {
+            'description': forms.TextInput(attrs={'placeholder': 'Description'}),
+            'location': forms.TextInput(attrs={'placeholder': 'Location'}),
+        }
+        labels = {
+            'description': 'Description',
+            'location': 'Location',
+        }
+        exclude = {'user'}
 
 
 class PhotoEditForm(forms.ModelForm):

@@ -1,13 +1,13 @@
 from django.urls import path, include
 
-from .views import add_pet, details_pet, edit_pet, delete_pet
+from petstagram_workshop.pets import views
 
 urlpatterns = [
-    path('add/', add_pet, name='add-pet'),
+    path('add/', views.CreatePetView.as_view(), name='add-pet'),
     path('<str:username>/pet/<slug:pet_name>/', include([
-        path('', details_pet, name='details-pet'),
-        path('edit/', edit_pet, name='edit-pet'),
-        path('delete/', delete_pet, name='delete-pet'),
+        path('', views.DetailsPetView.as_view(), name='details-pet'),
+        path('edit/', views.EditPetView.as_view(), name='edit-pet'),
+        path('delete/', views.DeletePetView.as_view(), name='delete-pet'),
 
     ]))
 ]
