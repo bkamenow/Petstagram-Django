@@ -22,8 +22,21 @@ class PetFrom(forms.ModelForm):
 
 
 class PetDeleteForm(PetFrom):
+    class Meta(PetFrom.Meta):
+        exclude = ['personal_photo']
+
     def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
         super().__init__(*args, **kwargs)
-        for (_, field) in self.fields.items():
-            field.widget.arttrs['disabled'] = 'disabled'
-            field.widget.arttrs['readonly'] = 'readonly'
+        for field in self.fields.values():
+            field.widget.attrs['disabled'] = 'disabled'
+            field.widget.attrs['readonly'] = 'readonly'
+        for field_name, field in self.fields.items():
+            field.required = False
+        if instance:
+            self.initial.update({
+                'name': instance.name,
+                'age': instance.age,
+                'type': instance.type,
+                'date_of_birth': instance.date_of_birth,
+            })

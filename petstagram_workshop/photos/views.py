@@ -26,12 +26,15 @@ def details_photo(request, pk):
     photo_is_liked_by_user = likes.filter(user=request.user)
     comments = photo.comment_set.all()
     comment_form = CommentForm()
+    user = request.user
+
     context = {
         'photos': photo,
         'likes': likes,
         'comments': comments,
         'comment_form': comment_form,
         'photo_is_liked_by_user': photo_is_liked_by_user,
+        'user': user,
     }
     return render(request, template_name='photos/photo-details-page.html', context=context)
 

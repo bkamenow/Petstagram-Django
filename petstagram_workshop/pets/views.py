@@ -24,10 +24,18 @@ class CreatePetView(views.CreateView):
 class DetailsPetView(generic.DetailView):
     model = Pet
     template_name = 'pets/pet-details-page.html'
+    slug_url_kwarg = 'pet_name'
 
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user__username=self.kwargs['username'], slug=self.kwargs['pet_name'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pet = self.get_object()
+        all_photos = pet.photo_set.all()
+        context['all_photos'] = all_photos
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -35,9 +43,11 @@ class EditPetView(views.UpdateView):
     model = Pet
     form_class = PetFrom
     template_name = 'pets/pet-edit-page.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'pet_name'
 
     def get_success_url(self):
-        return reverse_lazy('details-pet', kwargs={'pk': self.object.pk})
+        return reverse_lazy('details-pet', kwargs={'username': self.object.user.username, 'pet_name': self.object.slug})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -45,7 +55,11 @@ class DeletePetView(views.DeleteView):
     model = Pet
     form_class = PetDeleteForm
     template_name = 'pets/pet-delete-page.html'
-    next_page = reverse_lazy('home page')
+    slug_field = 'slug'
+    slug_url_kwarg = 'pet_name'
+    success_url = reverse_lazy('home page')
 
-    # def post(self, *args, **kwargs):
-    #     self.request.pet.pk.delete()
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.get_object()
+        return kwargs

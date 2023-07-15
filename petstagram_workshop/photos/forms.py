@@ -7,6 +7,7 @@ class PhotoCreateForm(forms.ModelForm):
     class Meta:
         model = Photo
         fields = '__all__'
+        CHOICES = Photo.tagged_pets
         widgets = {
             'description': forms.TextInput(attrs={'placeholder': 'Description'}),
             'location': forms.TextInput(attrs={'placeholder': 'Location'}),

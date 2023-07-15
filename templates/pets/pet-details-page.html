@@ -10,44 +10,34 @@
                 <div class="profile_img">
                     <div class="image">
                         <!-- Pet URL Image -->
-                        <img src="{{ pet.personal_photo }}"
+                        <img src="{{ pet.personal_photo.url }}"
                              alt="img8">
                     </div>
                 </div>
                 <div class="personal">
                     <div class="edit">
-                        <!-- Pet Name -->
                         <p>{{ pet.name }}</p>
-                        <!-- Pet Edit Button -->
-                        {% if owner == request.user %}
-                            <a href="{% url 'edit-pet' owner.username pet.slug %}">
+                        {% if pet.user_id == request.user.id %}
+                            <a href="{% url 'edit-pet' pet.user.username pet.slug %}">
                                 <img class="edit-img" src="{% static '/images/edit-pen-icon-6.jpg' %}" alt="edit button">
                             </a>
-                            <!-- Pet Delete Button -->
-                            <a href="{% url 'delete-pet' owner.username pet.slug %}">
+                            <a href="{% url 'delete-pet' pet.user.username pet.slug %}">
                                 <img class="bin-img" src="{% static '/images/icon-remove-22.jpg' %}" alt="bin button">
                             </a>
                         {% endif %}
                     </div>
                     <div class="data">
-                        <!-- Pet Total Photos -->
                         <span>{{ all_photos.count }}</span>
                         <p>photos</p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- End Pet Personal Data Section -->
 
         <div class="pet-posts">
-
-            <!-- IF Photos Start Pet Photos Post Section -->
-
             {% if all_photos %}
                 {% include 'common/pets-posts.html' %}
-                <!-- IF Photos End Pet Photos Post Section -->
             {% else %}
-                <!-- IF NOT Photos Show No Post Image -->
                 <img class="no-posts" src="{% static '/images/no_posts.png' %}"
                 alt="no posts image">
             {% endif %}

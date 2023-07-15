@@ -101,7 +101,7 @@
         {% endfor %}
             <a href="#">
                 <p class="message">
-                    <b>Some other fish</b>
+                    <b>{{ photo.description }}</b>
                 </p>
             </a>
             <a href="{% url 'details-photo' photo.pk %}">
@@ -109,7 +109,11 @@
             </a>
 
             <h5 class="postTime">{{ photo.date_of_publication }}</h5>
-
+            <div class="existingComments">
+                    {% for comment in photo.comment_set.all %}
+                        <p>{{ comment.user.username }}: {{ comment.comment }}</p>
+                    {% endfor %}
+            </div>
             <div class="addComments">
                 <div class="reaction">
                     <h3>

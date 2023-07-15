@@ -14,13 +14,14 @@ class Pet(models.Model):
     type = models.CharField(max_length=12, blank=True)
     personal_photo = models.ImageField(upload_to='media/', blank=True, validators=(validate_file_size,))
     date_of_birth = models.DateField(blank=True, null=True)
-    slug = models.SlugField(unique=True, editable=False)
+    slug = models.SlugField(unique=True, editable=False, null=False)
     user = models.ForeignKey(PetstagramUser, related_name='pets', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         if not self.slug:
             self.slug = slugify(f'{self.name}-{self.pk}')
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.name}, {self.type}'

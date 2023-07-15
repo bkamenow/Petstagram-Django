@@ -13,7 +13,7 @@
                     <div class="userDetails">
 
                         <!-- Link to User Profile Details Page-->
-                        <a href="#">
+                        <a href="{% url 'profile details' pk=user.pk %}">
                             <div class="profilepic">
                                 <div class="profile_img">
                                     <div class="image">
@@ -25,22 +25,21 @@
                         <h3>
 
                             <!-- Link to User Profile Details Page -->
-                            <a href="#">
-                                <!-- IF user has first name and last name -->
-                                Diyan Kalaydzhiev
-                                <!-- else -->
-                                <!-- show user username -->
+                            <a href="{% url 'profile details' pk=user.pk %}">
+                                {% if user.first_name and user.last_name %}
+                                    <p>{{ user.first_name }} {{ user.last_name }}</p>
+                                {% else %}
+                                    <p>{{ user.username }}</p>
+                                {% endif %}
                             </a>
                             <br>
-
-                            <!-- IF the photo has location -->
                             {% if photo.location %}
                                 <span>{{ photo.location }}</span>
                             {% endif %}
                             <!-- IF the viewer is the creator of the photo -->
                             <div class="edit-delete-btns">
                                 <!-- Link to Edit Pet Photo Page -->
-                                <a href="{% url 'edit-photo' photo.pk %}">
+                                <a href="{% url 'edit-photo' photos.pk %}">
                                     <img class="edit-img"
                                          src="{% static '/images/edit-pen-icon-6.jpg' %}" alt="edit button">
                                 </a>

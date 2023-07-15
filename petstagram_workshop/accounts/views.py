@@ -1,6 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic as views
 from django.contrib.auth import views as auth_views
+from django.views.generic import DeleteView
 
 from petstagram_workshop.accounts.forms import PetstagramUserCreateForm, LoginForm, PetstagramUserEditForm
 from petstagram_workshop.accounts.models import PetstagramUser
@@ -54,10 +56,10 @@ class UserEditView(views.UpdateView):
         return reverse_lazy('profile details', kwargs={'pk': self.object.pk})
 
 
-class UserDeleteView(views.DetailView):
+class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = PetstagramUser
     template_name = 'accounts/profile-delete-page.html'
-    next_page = reverse_lazy('home page')
+    success_url = reverse_lazy('home page')
 
-    def post(self, *args, **kwargs):
-        self.request.user.delete()
+    def get_object(self, queryset=None):
+        return self.request.user
